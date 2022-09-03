@@ -29,6 +29,7 @@ const clickedCat = async (id) => {
         const res = await fetch(`https://openapi.programming-hero.com/api/news/category/${id}`);
         const data = await res.json();
         displayCatagoriesDetails(data.data);
+
     }
     catch (e) {
         console.log(e);
@@ -41,6 +42,8 @@ const displayCatagoriesDetails = (catagoriesDetails) => {
     const newsContainer = document.getElementById('news-container')
     newsContainer.textContent = '';
     const searchResult = document.getElementById('search-info');
+    const searchNum = document.getElementById('search-num');
+    searchNum.innerHTML = `<h3>${catagoriesDetails.length} items found for category Entertainment</h3>`
     if (catagoriesDetails.length == 0) {
         searchResult.classList.remove('d-none');
     }
@@ -51,12 +54,9 @@ const displayCatagoriesDetails = (catagoriesDetails) => {
         const newsDiv = document.createElement('div');
         const trimDetails = detail.details.slice(0, 200);
         newsDiv.innerHTML = `
-            <div id="search-num" class="my-3 p-2">
-                <h3>${catagoriesDetails.length} items found for category Entertainment</h3>
-            </div>
-            <div class="card mb-3 mx-3">
+            <div class="card mb-5 mx-3">
         <div class="row g-0">
-            <div class="col-md-4">
+            <div class="col-md-4 p-2">
                 <img src="${detail.image_url}" class="img-fluid rounded-start" alt="...">
             </div>
             <div class="col-md-8">
@@ -84,6 +84,21 @@ const displayCatagoriesDetails = (catagoriesDetails) => {
     </div>`;
         newsContainer.appendChild(newsDiv);
     })
+    loader(false);
 }
-clickedCat()
+
+document.getElementById('catagories-container').addEventListener('click', function () {
+    loader(true);
+})
+
+const loader = isLoading => {
+    const spinner = document.getElementById('spinner');
+    if (isLoading) {
+        spinner.classList.remove('d-none');
+    }
+    else {
+        spinner.classList.add('d-none');
+    }
+}
+
 categoriesData()
