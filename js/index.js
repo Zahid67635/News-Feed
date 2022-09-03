@@ -19,11 +19,9 @@ const displayCatagories = (categories) => {
         cataDiv.appendChild(div);
 
     });
-}
-// const clickedCat = (id) => {
-//     const url = `https://openapi.programming-hero.com/api/news/category/${id}`;
 
-// }
+}
+
 const clickedCat = async (id) => {
     try {
         const res = await fetch(`https://openapi.programming-hero.com/api/news/category/${id}`);
@@ -43,7 +41,7 @@ const displayCatagoriesDetails = (catagoriesDetails) => {
     newsContainer.textContent = '';
     const searchResult = document.getElementById('search-info');
     const searchNum = document.getElementById('search-num');
-    searchNum.innerHTML = `<h3>${catagoriesDetails.length} items found for category Entertainment</h3>`
+    searchNum.innerHTML = `<h3>${catagoriesDetails.length} items found for this category...</h3>`
     if (catagoriesDetails.length == 0) {
         searchResult.classList.remove('d-none');
     }
@@ -51,6 +49,8 @@ const displayCatagoriesDetails = (catagoriesDetails) => {
         searchResult.classList.add('d-none');
     }
     catagoriesDetails.forEach(detail => {
+        const modalTitle = document.getElementById('exampleModalLabel');
+        const modalDetail = document.getElementById('modal-detail');
         const newsDiv = document.createElement('div');
         const trimDetails = detail.details.slice(0, 200);
         newsDiv.innerHTML = `
@@ -67,15 +67,15 @@ const displayCatagoriesDetails = (catagoriesDetails) => {
                 <div class="d-flex col">
                     <img src="${detail.author.img}" alt="" class="img-fluid" style="width:45px;height:45px; border-radius:50%;">
                     <div class ="mx-1">
-                        <strong>${detail.author.name}</strong>
+                        <strong>${detail.author.name ? detail.author.name : 'Not found'}</strong>
                         <div>${detail.author.published_date}</div>
                     </div>
                 </div>
                 <div class="col mt-3">
-                    <h4>${detail.total_view}M</h4>
+                    <h4><span><i class="fa-solid fa-eye"></i></span> ${detail.total_view ? detail.total_view : 'Missing'}M</h4>
                 </div>
                 <div class="col mt-3">
-                    <a href="#">Details></a>
+                    <button id = "modal-btn" class = "btn btn-primary" data-bs-toggle="modal" data-bs-target="#newsModal">Details></button>
                 </div>
             </div>
                 </div>
@@ -83,9 +83,15 @@ const displayCatagoriesDetails = (catagoriesDetails) => {
         </div>
     </div>`;
         newsContainer.appendChild(newsDiv);
+        document.getElementById('modal-btn').addEventListener('click', function () {
+            modalTitle.innerText = detail.title;
+            modalDetail.innerText = detail.details;
+        })
+
     })
     loader(false);
 }
+
 
 document.getElementById('catagories-container').addEventListener('click', function () {
     loader(true);
