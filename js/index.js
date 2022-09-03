@@ -2,12 +2,14 @@ const categoriesData = async () => {
     try {
         const res = await fetch('https://openapi.programming-hero.com/api/news/categories')
         const data = await res.json();
+
         displayCatagories(data.data.news_category);
     }
     catch (e) {
         console.log(e);
     }
 }
+
 // display all the categories available //
 const displayCatagories = (categories) => {
     const cataDiv = document.getElementById('catagories-container');
@@ -88,11 +90,16 @@ const displayCatagoriesDetails = (catagoriesDetails) => {
 }
 // Particular news details //
 const perNews = async (newsId) => {
-    const res = await fetch(`https://openapi.programming-hero.com/api/news/${newsId}`);
-    const data = await res.json();
-    displayModalInfo(data.data[0]);
+    try {
+        const res = await fetch(`https://openapi.programming-hero.com/api/news/${newsId}`);
+        const data = await res.json();
+        displayModalInfo(data.data[0]);
+    }
+    catch (e) {
+        console.log(e);
+    }
 }
-
+// modal informations from the click
 const displayModalInfo = (info) => {
     console.log(info);
     const modalTitle = document.getElementById('exampleModalLabel');
