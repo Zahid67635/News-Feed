@@ -8,20 +8,20 @@ const categoriesData = async () => {
         console.log(e);
     }
 }
-
+// display all the categories available //
 const displayCatagories = (categories) => {
     const cataDiv = document.getElementById('catagories-container');
     categories.forEach(category => {
         const div = document.createElement('div');
         div.classList.add('mx-4', 'fs-4',)
-        // div.innerText = `${category.category_name}`;
+
         div.innerHTML = `<button class ="btn btn-outline-secondary" onclick="clickedCat('${category.category_id}')">${category.category_name}</button>`
         cataDiv.appendChild(div);
 
     });
 
 }
-
+// the category which is clicked //
 const clickedCat = async (id) => {
     try {
         const res = await fetch(`https://openapi.programming-hero.com/api/news/category/${id}`);
@@ -34,7 +34,7 @@ const clickedCat = async (id) => {
     }
 
 }
-
+// Every news in a category
 const displayCatagoriesDetails = (catagoriesDetails) => {
     console.log(catagoriesDetails)
     const newsContainer = document.getElementById('news-container')
@@ -49,8 +49,7 @@ const displayCatagoriesDetails = (catagoriesDetails) => {
         searchResult.classList.add('d-none');
     }
     catagoriesDetails.forEach(detail => {
-        const modalTitle = document.getElementById('exampleModalLabel');
-        const modalDetail = document.getElementById('modal-detail');
+
         const newsDiv = document.createElement('div');
         const trimDetails = detail.details.slice(0, 200);
         newsDiv.innerHTML = `
@@ -75,7 +74,7 @@ const displayCatagoriesDetails = (catagoriesDetails) => {
                     <h4><span><i class="fa-solid fa-eye"></i></span> ${detail.total_view ? detail.total_view : 'Missing'}M</h4>
                 </div>
                 <div class="col mt-3">
-                    <button id = "modal-btn" class = "btn btn-primary" data-bs-toggle="modal" data-bs-target="#newsModal">Details></button>
+                    <button id = "modal-btn" class = "btn btn-primary" onclick = " perNews('${detail._id}')" data-bs-toggle="modal" data-bs-target="#newsModal">Details></button>
                 </div>
             </div>
                 </div>
@@ -83,20 +82,29 @@ const displayCatagoriesDetails = (catagoriesDetails) => {
         </div>
     </div>`;
         newsContainer.appendChild(newsDiv);
-        document.getElementById('modal-btn').addEventListener('click', function () {
-            modalTitle.innerText = detail.title;
-            modalDetail.innerText = detail.details;
-        })
 
     })
     loader(false);
 }
+// Particular news details //
+const perNews = async (newsId) => {
+    const res = await fetch(`https://openapi.programming-hero.com/api/news/${newsId}`);
+    const data = await res.json();
+    displayModalInfo(data.data[0]);
+}
 
-
+const displayModalInfo = (info) => {
+    console.log(info);
+    const modalTitle = document.getElementById('exampleModalLabel');
+    const modalDetail = document.getElementById('modal-detail');
+    modalTitle.innerText = info.title;
+    modalDetail.innerText = info.details;
+}
+// loader active
 document.getElementById('catagories-container').addEventListener('click', function () {
     loader(true);
 })
-
+// loader function  //
 const loader = isLoading => {
     const spinner = document.getElementById('spinner');
     if (isLoading) {
